@@ -228,23 +228,20 @@ document.getElementById("assetForm").addEventListener("submit", e => {
   };
 
   fetch(WEB_APP_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify(newAsset)
-  })
-  .then(() => {
-    assets.push(newAsset);
-    save();
-    e.target.reset();
-    renderAssets();
-    toast("تم إرسال الأصل إلى Google Sheet");
-  })
-  .catch(() => {
-    toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
-  });
+  method: "POST",
+  mode: "no-cors",
+  body: new URLSearchParams(newAsset)
+})
+.then(() => {
+  assets.push(newAsset);
+  save();
+  e.target.reset();
+  renderAssets();
+  toast("تم إرسال الأصل إلى Google Sheet");
+})
+.catch(() => {
+  toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
+});
 });
 
 document.getElementById("handoverForm").addEventListener("submit", e => {
