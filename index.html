@@ -23,17 +23,7 @@
         <button class="nav-item" data-page="add">إضافة أصل جديد</button>
         <button class="nav-item" data-page="handover">التسليم والاستلام</button>
         <button class="nav-item" data-page="maintenance">الصيانة</button>
-        <button class="nav-item admin-only" data-page="settings">الإعدادات والصلاحيات</button>
       </nav>
-
-      <div class="user-card">
-        <label>نوع الدخول</label>
-        <select id="roleSelect">
-          <option value="user">مستخدم / مهندس - إضافة فقط</option>
-          <option value="admin">مدير النظام - كامل الصلاحيات</option>
-        </select>
-        <small>المستخدم العادي لا يستطيع الحذف.</small>
-      </div>
     </aside>
 
     <main class="main">
@@ -82,7 +72,6 @@
                   <th>المستخدم</th>
                   <th>الحالة</th>
                   <th>QR</th>
-                  <th class="admin-only">إجراءات</th>
                 </tr>
               </thead>
               <tbody id="assetsTable"></tbody>
@@ -110,21 +99,27 @@
                   <option>Other</option>
                 </select>
               </label>
+
               <label>الشركة
                 <input name="brand" placeholder="Dell / HP / Lenovo" required />
               </label>
+
               <label>الموديل
                 <input name="model" placeholder="Latitude 5540" required />
               </label>
+
               <label>الرقم التسلسلي Serial
                 <input name="serial" placeholder="Serial Number" required />
               </label>
+
               <label>المشروع
                 <input name="project" placeholder="العثيم بارك - الدمام" required />
               </label>
+
               <label>المستخدم / المهندس
                 <input name="user" placeholder="اسم المستلم" required />
               </label>
+
               <label>الحالة
                 <select name="status" required>
                   <option>مستخدم</option>
@@ -134,13 +129,16 @@
                   <option>تالف</option>
                 </select>
               </label>
+
               <label>تاريخ التسليم
                 <input type="date" name="handoverDate" />
               </label>
+
               <label class="full">ملاحظات
                 <textarea name="notes" placeholder="أي ملاحظات إضافية"></textarea>
               </label>
             </div>
+
             <button class="primary" type="submit">حفظ الأصل</button>
           </form>
         </div>
@@ -173,14 +171,9 @@
         </div>
       </section>
 
-      <section id="settings" class="page">
-        <div class="panel">
-          <h3>الصلاحيات</h3>
-          <p><b>المدير:</b> إضافة، تعديل، حذف، تصدير، عرض جميع التقارير.</p>
-          <p><b>المهندس:</b> إضافة أصل جديد وتسجيل حركة أو صيانة فقط، ولا يستطيع الحذف.</p>
-          <p class="note">في النسخة الأونلاين الحقيقية يتم ربط هذه الصلاحيات بحسابات Google أو Microsoft.</p>
-        </div>
-      </section>
+      <footer style="text-align:center; margin-top:25px; color:#627d98; font-size:14px;">
+        البرنامج تحت إدارة قسم تكنولوجيا المعلومات في شركة CLC
+      </footer>
     </main>
   </div>
 
