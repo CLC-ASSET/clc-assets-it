@@ -199,10 +199,7 @@ document.querySelectorAll(".nav-item").forEach(btn => {
   btn.addEventListener("click", () => navigate(btn.dataset.page));
 });
 
-document.getElementById("roleSelect").value = role;
-document.getElementById("roleSelect").addEventListener("change", e => {
-  setRole(e.target.value);
-});
+
 
 document.getElementById("assetForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -298,4 +295,4 @@ document.getElementById("maintenanceForm").addEventListener("submit", e => {
 
 renderAssets();
 renderLogs();
-applyRole();
+
