@@ -5,7 +5,6 @@ const seedAssets = [];
 let assets = JSON.parse(localStorage.getItem("clc_assets") || "null") || seedAssets;
 let handovers = JSON.parse(localStorage.getItem("clc_handovers") || "[]");
 let maintenance = JSON.parse(localStorage.getItem("clc_maintenance") || "[]");
-let role = localStorage.getItem("clc_role") || "user";
 
 function save(){
   localStorage.setItem("clc_assets", JSON.stringify(assets));
@@ -24,18 +23,6 @@ function toast(msg){
   t.textContent = msg;
   t.style.display = "block";
   setTimeout(() => t.style.display = "none", 2500);
-}
-
-function applyRole(){
-  document.querySelectorAll(".admin-only").forEach(el => {
-    el.style.display = role === "admin" ? "" : "none";
-  });
-}
-
-function setRole(newRole){
-  role = newRole;
-  localStorage.setItem("clc_role", role);
-  applyRole();
 }
 
 function navigate(page){
@@ -106,8 +93,6 @@ function renderAssets(){
   });
 
   document.getElementById("assetsTable").innerHTML = rows.map(a => {
-    const realIndex = assets.indexOf(a);
-
     return `<tr>
       <td><b>${a.assetNo}</b></td>
       <td>${a.type}</td>
@@ -118,46 +103,10 @@ function renderAssets(){
       <td>${a.user}</td>
       <td><span class="badge">${a.status}</span></td>
       <td class="qr">QR-${a.assetNo}</td>
-      <td class="admin-only">
-        <button class="edit" onclick="editAsset(${realIndex})">تعديل</button>
-        <button class="danger" onclick="deleteAsset(${realIndex})">حذف</button>
-      </td>
     </tr>`;
   }).join("");
 
-  applyRole();
   renderDashboard();
-}
-
-function deleteAsset(i){
-  if(role !== "admin"){
-    toast("غير مسموح بالحذف للمستخدم العادي");
-    return;
-  }
-
-  if(confirm("هل تريد حذف هذا الأصل؟")){
-    assets.splice(i,1);
-    save();
-    renderAssets();
-    toast("تم الحذف محليًا");
-  }
-}
-
-function editAsset(i){
-  if(role !== "admin"){
-    toast("غير مسموح بالتعديل");
-    return;
-  }
-
-  const a = assets[i];
-  const newUser = prompt("المستخدم الحالي:", a.user);
-
-  if(newUser !== null){
-    a.user = newUser;
-    save();
-    renderAssets();
-    toast("تم التعديل محليًا");
-  }
 }
 
 function renderLogs(){
@@ -199,8 +148,6 @@ document.querySelectorAll(".nav-item").forEach(btn => {
   btn.addEventListener("click", () => navigate(btn.dataset.page));
 });
 
-
-
 document.getElementById("assetForm").addEventListener("submit", e => {
   e.preventDefault();
 
@@ -225,20 +172,20 @@ document.getElementById("assetForm").addEventListener("submit", e => {
   };
 
   fetch(WEB_APP_URL, {
-  method: "POST",
-  mode: "no-cors",
-  body: new URLSearchParams(newAsset)
-})
-.then(() => {
-  assets.push(newAsset);
-  save();
-  e.target.reset();
-  renderAssets();
-  toast("تم إرسال الأصل إلى Google Sheet");
-})
-.catch(() => {
-  toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
-});
+    method: "POST",
+    mode: "no-cors",
+    body: new URLSearchParams(newAsset)
+  })
+  .then(() => {
+    assets.push(newAsset);
+    save();
+    e.target.reset();
+    renderAssets();
+    toast("تم إرسال الأصل إلى Google Sheet");
+  })
+  .catch(() => {
+    toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
+  });
 });
 
 document.getElementById("handoverForm").addEventListener("submit", e => {
