@@ -137,7 +137,10 @@ document.getElementById("assetForm").addEventListener("submit",e=>{
   const data=Object.fromEntries(new FormData(e.target).entries());
   if(assets.some(a=>a.serial===data.serial)){toast("هذا السيريال مسجل من قبل");return;}
   assets.push({assetNo:nextAssetNo(),...data});
-  save(); e.target.reset(); renderAssets(); toast("تمت إضافة الأصل بنجاح");
+save();
+e.target.reset();
+renderAssets();
+toast("تمت إضافة الأصل بنجاح");
 });
 
 document.getElementById("handoverForm").addEventListener("submit",e=>{
