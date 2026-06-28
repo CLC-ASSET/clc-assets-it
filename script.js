@@ -1,17 +1,10 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdYoePiFuX7bpu-c97S_OJPByCXliwF5bhOrVcBpSWXk4z2ygZI7Shi3_MAJkdP49d/exec";
 
-let assets = JSON.parse(localStorage.getItem("clc_assets") || "[]");
+let assets = [];
 let handovers = JSON.parse(localStorage.getItem("clc_handovers") || "[]");
 
-function save(){
-  localStorage.setItem("clc_assets", JSON.stringify(assets));
+function saveHandovers(){
   localStorage.setItem("clc_handovers", JSON.stringify(handovers));
-}
-
-function nextAssetNo(){
-  const nums = assets.map(a => parseInt((a.assetNo || "").replace(/\D/g,''))).filter(Boolean);
-  const next = nums.length ? Math.max(...nums) + 1 : 1;
-  return "CLC-IT-" + String(next).padStart(5,"0");
 }
 
 function toast(msg){
@@ -19,6 +12,28 @@ function toast(msg){
   t.textContent = msg;
   t.style.display = "block";
   setTimeout(() => t.style.display = "none", 2500);
+}
+
+function nextAssetNo(){
+  const nums = assets
+    .map(a => parseInt((a.assetNo || "").replace(/\D/g,'')))
+    .filter(Boolean);
+
+  const next = nums.length ? Math.max(...nums) + 1 : 1;
+  return "CLC-IT-" + String(next).padStart(5,"0");
+}
+
+async function loadAssets(){
+  try {
+    const res = await fetch(WEB_APP_URL);
+    assets = await res.json();
+    renderAssets();
+    renderDashboard();
+    toast("تم تحميل البيانات من Google Sheet");
+  } catch (err) {
+    console.error(err);
+    toast("تعذر تحميل البيانات من Google Sheet");
+  }
 }
 
 function navigate(page){
@@ -145,7 +160,7 @@ document.getElementById("assetForm").addEventListener("submit", e => {
   const data = Object.fromEntries(new FormData(e.target).entries());
 
   if(assets.some(a => a.serial === data.serial)){
-    toast("هذا السيريال مسجل من قبل على هذا الجهاز");
+    toast("هذا السيريال مسجل من قبل");
     return;
   }
 
@@ -168,15 +183,13 @@ document.getElementById("assetForm").addEventListener("submit", e => {
     body: new URLSearchParams(newAsset)
   })
   .then(() => {
-    assets.push(newAsset);
-    save();
     e.target.reset();
-    renderAssets();
     toast("تم إرسال الأصل إلى Google Sheet");
+    setTimeout(loadAssets, 1200);
   })
   .catch((err) => {
     console.error(err);
-    toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
+    toast("حدث خطأ أثناء الإرسال");
   });
 });
 
@@ -190,18 +203,10 @@ document.getElementById("handoverForm").addEventListener("submit", e => {
     ...data
   });
 
-  const asset = assets.find(a => a.assetNo === data.assetNo);
-
-  if(asset){
-    asset.user = data.to;
-    asset.project = data.project;
-    asset.status = "مستخدم";
-  }
-
-  save();
+  saveHandovers();
   e.target.reset();
   renderLogs();
-  renderAssets();
+
   toast("تم تسجيل حركة التسليم والاستلام");
 });
 
@@ -209,5 +214,5 @@ document.getElementById("handoverForm").addEventListener("submit", e => {
   document.getElementById(id).addEventListener("input", renderAssets);
 });
 
-renderAssets();
 renderLogs();
+loadAssets();
