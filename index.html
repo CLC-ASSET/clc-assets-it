@@ -3,18 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>نظام إدارة أصول تقنية المعلومات - CLC</title>
+  <title>نظام إدارة أصول الـ IT - CLC</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        
         <div class="logo">CLC</div>
         <div>
           <h1>إدارة أصول الـ IT</h1>
-          <p>IT Asset Management</p>
+          <p>CLC IT Asset Management</p>
         </div>
       </div>
 
@@ -23,7 +22,6 @@
         <button class="nav-item" data-page="assets">الأصول والأجهزة</button>
         <button class="nav-item" data-page="add">إضافة أصل جديد</button>
         <button class="nav-item" data-page="handover">التسليم والاستلام</button>
-        <button class="nav-item" data-page="maintenance">الصيانة</button>
       </nav>
     </aside>
 
@@ -31,7 +29,7 @@
       <header class="topbar">
         <div>
           <h2 id="pageTitle">لوحة التحكم</h2>
-          <p>نظام عربي بسيط لحصر أجهزة الشركة في جميع المشاريع</p>
+          <p>نظام بسيط لحصر ومتابعة أجهزة ومعدات تقنية المعلومات في مشاريع الشركة</p>
         </div>
         <button class="primary" onclick="exportCSV()">تصدير CSV</button>
       </header>
@@ -114,7 +112,7 @@
               </label>
 
               <label>المشروع
-                <input name="project" placeholder="العثيم بارك - الدمام" required />
+                <input name="project" placeholder="اسم المشروع" required />
               </label>
 
               <label>المستخدم / المهندس
@@ -147,7 +145,7 @@
 
       <section id="handover" class="page">
         <div class="panel">
-          <h3>سجل التسليم والاستلام</h3>
+          <h3>التسليم والاستلام</h3>
           <form id="handoverForm" class="inline-form">
             <input name="assetNo" placeholder="رقم الأصل" required />
             <input name="from" placeholder="من" />
@@ -159,20 +157,7 @@
         </div>
       </section>
 
-      <section id="maintenance" class="page">
-        <div class="panel">
-          <h3>سجل الصيانة</h3>
-          <form id="maintenanceForm" class="inline-form">
-            <input name="assetNo" placeholder="رقم الأصل" required />
-            <input name="issue" placeholder="العطل" required />
-            <input name="action" placeholder="الإجراء" />
-            <button class="primary" type="submit">تسجيل صيانة</button>
-          </form>
-          <ul id="maintenanceList" class="log-list"></ul>
-        </div>
-      </section>
-
-      <footer style="text-align:center; margin-top:25px; color:#627d98; font-size:14px;">
+      <footer class="footer">
         البرنامج تحت إدارة قسم تكنولوجيا المعلومات في شركة CLC
       </footer>
     </main>

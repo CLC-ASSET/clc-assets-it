@@ -1,15 +1,11 @@
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdYoePiFuX7bpu-c97S_OJPByCXliwF5bhOrVcBpSWXk4z2ygZI7Shi3_MAJkdP49d/exec";
 
-const seedAssets = [];
-
-let assets = JSON.parse(localStorage.getItem("clc_assets") || "null") || seedAssets;
+let assets = JSON.parse(localStorage.getItem("clc_assets") || "[]");
 let handovers = JSON.parse(localStorage.getItem("clc_handovers") || "[]");
-let maintenance = JSON.parse(localStorage.getItem("clc_maintenance") || "[]");
 
 function save(){
   localStorage.setItem("clc_assets", JSON.stringify(assets));
   localStorage.setItem("clc_handovers", JSON.stringify(handovers));
-  localStorage.setItem("clc_maintenance", JSON.stringify(maintenance));
 }
 
 function nextAssetNo(){
@@ -55,7 +51,7 @@ function renderDashboard(){
   document.getElementById("projectSummary").innerHTML =
     Object.entries(byProject)
       .map(([p,c]) => `<div><b>${p}</b> — ${c} أصل / جهاز</div>`)
-      .join("") || "<div>لا توجد بيانات</div>";
+      .join("") || "<div>لا توجد بيانات حتى الآن</div>";
 }
 
 function updateFilters(){
@@ -113,12 +109,7 @@ function renderLogs(){
   document.getElementById("handoverList").innerHTML =
     handovers.map(h =>
       `<li><b>${h.date}</b> — ${h.assetNo} من ${h.from || "-"} إلى ${h.to} / ${h.project}</li>`
-    ).join("");
-
-  document.getElementById("maintenanceList").innerHTML =
-    maintenance.map(m =>
-      `<li><b>${m.date}</b> — ${m.assetNo}: ${m.issue} — ${m.action || "لم يحدد إجراء"}</li>`
-    ).join("");
+    ).join("") || "<li>لا توجد حركات تسليم واستلام حتى الآن</li>";
 }
 
 function exportCSV(){
@@ -183,7 +174,8 @@ document.getElementById("assetForm").addEventListener("submit", e => {
     renderAssets();
     toast("تم إرسال الأصل إلى Google Sheet");
   })
-  .catch(() => {
+  .catch((err) => {
+    console.error(err);
     toast("حدث خطأ أثناء الإرسال إلى Google Sheet");
   });
 });
@@ -210,30 +202,7 @@ document.getElementById("handoverForm").addEventListener("submit", e => {
   e.target.reset();
   renderLogs();
   renderAssets();
-  toast("تم تسجيل الحركة");
-});
-
-document.getElementById("maintenanceForm").addEventListener("submit", e => {
-  e.preventDefault();
-
-  const data = Object.fromEntries(new FormData(e.target).entries());
-
-  maintenance.unshift({
-    date: new Date().toLocaleDateString("ar-SA"),
-    ...data
-  });
-
-  const asset = assets.find(a => a.assetNo === data.assetNo);
-
-  if(asset){
-    asset.status = "بالصيانة";
-  }
-
-  save();
-  e.target.reset();
-  renderLogs();
-  renderAssets();
-  toast("تم تسجيل الصيانة");
+  toast("تم تسجيل حركة التسليم والاستلام");
 });
 
 ["searchInput","projectFilter","typeFilter"].forEach(id => {
@@ -242,4 +211,3 @@ document.getElementById("maintenanceForm").addEventListener("submit", e => {
 
 renderAssets();
 renderLogs();
-
