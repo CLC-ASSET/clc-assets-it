@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>نظام إدارة أصول تقنية المعلومات - CLC</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">CLC</div>
+        <div>
+          <h1>إدارة الأصول</h1>
+          <p>IT Asset Management</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-page="dashboard">لوحة التحكم</button>
+        <button class="nav-item" data-page="assets">الأصول والأجهزة</button>
+        <button class="nav-item" data-page="add">إضافة أصل جديد</button>
+        <button class="nav-item" data-page="handover">التسليم والاستلام</button>
+        <button class="nav-item" data-page="maintenance">الصيانة</button>
+        <button class="nav-item admin-only" data-page="settings">الإعدادات والصلاحيات</button>
+      </nav>
+
+      <div class="user-card">
+        <label>نوع الدخول</label>
+        <select id="roleSelect">
+          <option value="user">مستخدم / مهندس - إضافة فقط</option>
+          <option value="admin">مدير النظام - كامل الصلاحيات</option>
+        </select>
+        <small>المستخدم العادي لا يستطيع الحذف.</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">لوحة التحكم</h2>
+          <p>نظام عربي بسيط لحصر أجهزة الشركة في جميع المشاريع</p>
+        </div>
+        <button class="primary" onclick="exportCSV()">تصدير CSV</button>
+      </header>
+
+      <section id="dashboard" class="page active">
+        <div class="cards">
+          <div class="card"><span>إجمالي الأصول</span><strong id="totalAssets">0</strong></div>
+          <div class="card"><span>Laptop</span><strong id="totalLaptops">0</strong></div>
+          <div class="card"><span>Desktop</span><strong id="totalDesktops">0</strong></div>
+          <div class="card"><span>الشاشات</span><strong id="totalMonitors">0</strong></div>
+          <div class="card"><span>الطابعات</span><strong id="totalPrinters">0</strong></div>
+          <div class="card warning"><span>بالصيانة</span><strong id="totalMaintenance">0</strong></div>
+        </div>
+
+        <div class="panel">
+          <h3>ملخص حسب المشروع</h3>
+          <div id="projectSummary" class="summary-list"></div>
+        </div>
+      </section>
+
+      <section id="assets" class="page">
+        <div class="panel">
+          <div class="toolbar">
+            <input id="searchInput" placeholder="بحث باسم المهندس / المشروع / السيريال / رقم الأصل" />
+            <select id="projectFilter"><option value="">كل المشاريع</option></select>
+            <select id="typeFilter"><option value="">كل الأنواع</option></select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>رقم الأصل</th>
+                  <th>نوع الجهاز</th>
+                  <th>الشركة</th>
+                  <th>الموديل</th>
+                  <th>Serial</th>
+                  <th>المشروع</th>
+                  <th>المستخدم</th>
+                  <th>الحالة</th>
+                  <th>QR</th>
+                  <th class="admin-only">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="assetsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="add" class="page">
+        <div class="panel form-panel">
+          <h3>إضافة أصل جديد</h3>
+          <form id="assetForm">
+            <div class="grid">
+              <label>نوع الجهاز
+                <select name="type" required>
+                  <option value="">اختر</option>
+                  <option>Laptop</option>
+                  <option>Desktop</option>
+                  <option>Monitor</option>
+                  <option>Printer</option>
+                  <option>Scanner</option>
+                  <option>UPS</option>
+                  <option>Router</option>
+                  <option>Switch</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>الشركة
+                <input name="brand" placeholder="Dell / HP / Lenovo" required />
+              </label>
+              <label>الموديل
+                <input name="model" placeholder="Latitude 5540" required />
+              </label>
+              <label>الرقم التسلسلي Serial
+                <input name="serial" placeholder="Serial Number" required />
+              </label>
+              <label>المشروع
+                <input name="project" placeholder="العثيم بارك - الدمام" required />
+              </label>
+              <label>المستخدم / المهندس
+                <input name="user" placeholder="اسم المستلم" required />
+              </label>
+              <label>الحالة
+                <select name="status" required>
+                  <option>مستخدم</option>
+                  <option>متاح بالمخزن</option>
+                  <option>بالصيانة</option>
+                  <option>مفقود</option>
+                  <option>تالف</option>
+                </select>
+              </label>
+              <label>تاريخ التسليم
+                <input type="date" name="handoverDate" />
+              </label>
+              <label class="full">ملاحظات
+                <textarea name="notes" placeholder="أي ملاحظات إضافية"></textarea>
+              </label>
+            </div>
+            <button class="primary" type="submit">حفظ الأصل</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="handover" class="page">
+        <div class="panel">
+          <h3>سجل التسليم والاستلام</h3>
+          <form id="handoverForm" class="inline-form">
+            <input name="assetNo" placeholder="رقم الأصل" required />
+            <input name="from" placeholder="من" />
+            <input name="to" placeholder="إلى" required />
+            <input name="project" placeholder="المشروع" required />
+            <button class="primary" type="submit">تسجيل حركة</button>
+          </form>
+          <ul id="handoverList" class="log-list"></ul>
+        </div>
+      </section>
+
+      <section id="maintenance" class="page">
+        <div class="panel">
+          <h3>سجل الصيانة</h3>
+          <form id="maintenanceForm" class="inline-form">
+            <input name="assetNo" placeholder="رقم الأصل" required />
+            <input name="issue" placeholder="العطل" required />
+            <input name="action" placeholder="الإجراء" />
+            <button class="primary" type="submit">تسجيل صيانة</button>
+          </form>
+          <ul id="maintenanceList" class="log-list"></ul>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="panel">
+          <h3>الصلاحيات</h3>
+          <p><b>المدير:</b> إضافة، تعديل، حذف، تصدير، عرض جميع التقارير.</p>
+          <p><b>المهندس:</b> إضافة أصل جديد وتسجيل حركة أو صيانة فقط، ولا يستطيع الحذف.</p>
+          <p class="note">في النسخة الأونلاين الحقيقية يتم ربط هذه الصلاحيات بحسابات Google أو Microsoft.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
